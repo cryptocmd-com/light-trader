@@ -1,0 +1,2 @@
+Quart==0.14.1
+binance.py==1.7.0
