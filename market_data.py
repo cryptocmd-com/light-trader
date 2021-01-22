@@ -24,9 +24,28 @@ class CandleLiveTimeline:
         return len(self.candle_timeline) >= self.candles_min_required
 
     def on_kline(self, event: binance.events.KlineWrapper):
+        if not event.event_type.lower().startswith('kline'):
+            raise TypeError(f'Unexpected event type: {event.event_type}')
+
         self.current_candle = event
         if self.current_candle.kline_closed:
             self.candle_timeline.append(self.current_candle)
+
+    @staticmethod
+    def _extract_kline_fields(event: binance.events.KlineWrapper):
+        prefix = 'kline_'
+        prefix_len = len(prefix)
+        return {
+            k[prefix_len:]: v
+            for k, v in event.__dict__.items()
+            if k.startswith(prefix)
+        }
+
+    @property
+    def latest_candles(self) -> typing.Tuple[dict]:
+        return tuple(map(
+            self._extract_kline_fields,
+            self.candle_timeline[-self.candles_min_required:]))
 
 
 class MarketFeed:
@@ -49,3 +68,6 @@ class MarketFeed:
                 timeline.kline_stream_name
             )
 
+    def get_latest_candles_for_symbol(self, symbol: str):
+        timeline = self.candle_timelines[symbol]
+        return timeline.latest_candles
