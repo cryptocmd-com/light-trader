@@ -21,7 +21,7 @@ async def get_client() -> binance.Client:
     return client
 
 
-async def start(loop):
+async def start():
     client = await get_client()
     market.register_for_candles(client)
-    loop.create_task(client.start_market_events_listener())
+    await client.start_market_events_listener()

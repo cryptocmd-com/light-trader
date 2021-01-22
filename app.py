@@ -16,7 +16,7 @@ app = Quart(__name__)
 @app.before_serving
 async def startup():
     loop = asyncio.get_event_loop()
-    loop.create_task(binance_trader.start(loop))
+    loop.create_task(binance_trader.start())
     logger.info('starting loop')
 
 
