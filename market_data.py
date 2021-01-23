@@ -15,7 +15,8 @@ class CandleLiveTimeline:
         self.interval = '1m'
         self.candles_min_required = 60
         self.current_candle = None
-        self.candle_timeline = []
+        self.candle_timeline = collections.deque(
+            maxlen=self.candles_min_required)
         self.binance_client = None
 
     @property
@@ -48,8 +49,8 @@ class CandleLiveTimeline:
         }
 
     @property
-    def latest_candles(self) -> typing.List[dict]:
-        return self.candle_timeline[-self.candles_min_required:]
+    def latest_candles(self) -> typing.Tuple[dict]:
+        return tuple(self.candle_timeline)
 
     async def _supplement_earlier_candles(self):
         n_missing = self.candles_min_required - len(self.candle_timeline)
@@ -84,13 +85,13 @@ class CandleLiveTimeline:
                 'taker_buy_base_asset_volume',
                 'taker_buy_quote_asset_volume'
             )
-            self.candle_timeline[:0] = [
+            self.candle_timeline.extendleft(
                 dict(collections.ChainMap(
                     dict(zip(column_names, c)),
                     {'first_trade_id': None, 'last_trade_id': None},
                     earliest_available))
-                for c in candles if c[0] < earliest_available['start_time']
-            ]
+                for c in reversed(candles) if c[0] < earliest_available['start_time']
+            )
 
         return
 
