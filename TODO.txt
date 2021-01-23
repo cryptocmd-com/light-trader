@@ -1,0 +1,10 @@
+Tasks for development
+
+* Support the use of a test instance of Binance:
+https://testnet.binance.vision/#faq-periodic-reset
+* Integrate with the indicator for entering positions
+* Send trading position entry and exit orders
+* Provide position and trade information through the REST endpoints.
+* Provide some security for our REST API.
+* Also subscribe for order book updates. Then instead of entering positions
+using MKT orders, send IOC which takes into account the available liquidity.
