@@ -4,6 +4,7 @@ import http
 
 from dotenv import load_dotenv
 from quart import Quart, abort
+from quart_compress import Compress
 import binance_trader
 
 load_dotenv()
@@ -12,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 app = Quart(__name__)
+Compress(app)
 
 
 @app.before_serving
