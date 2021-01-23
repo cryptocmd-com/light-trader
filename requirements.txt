@@ -1,6 +1,6 @@
 Quart==0.14.1
 binance.py==1.7.0
 # For Binance
-aiohttp=3.7.3
+aiohttp==3.7.3
 
 python-dotenv==0.15.0
