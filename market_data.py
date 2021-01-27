@@ -13,7 +13,7 @@ class CandleLiveTimeline:
     def __init__(self, symbol):
         self.symbol = symbol.lower()
         self.interval = '1m'
-        self.candles_min_required = 60
+        self.candles_min_required = 1
         self.current_candle = None
         self.candle_timeline = collections.deque(
             maxlen=self.candles_min_required)
