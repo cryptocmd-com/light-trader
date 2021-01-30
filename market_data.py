@@ -1,3 +1,4 @@
+import abc
 import logging
 import collections
 import asyncio
@@ -9,8 +10,17 @@ import binance
 logger = logging.getLogger(__name__)
 
 
+class MarketFeedEventHandler(abc.ABC):
+    def on_candle(self, candle: dict):
+        raise NotImplementedError
+
+
 class CandleLiveTimeline:
-    def __init__(self, symbol):
+    def __init__(
+            self,
+            symbol: str,
+            event_handlers: typing.Iterable[MarketFeedEventHandler] = ()
+        ):
         self.symbol = symbol.lower()
         self.interval = '1m'
         self.candles_min_required = 1
@@ -18,6 +28,15 @@ class CandleLiveTimeline:
         self.candle_timeline = collections.deque(
             maxlen=self.candles_min_required)
         self.binance_client = None
+        self.event_handlers: typing.List[MarketFeedEventHandler] = list(
+            event_handlers)
+
+    def add_event_handler(self, new_handler: MarketFeedEventHandler) -> None:
+        for handler in self.event_handlers:
+            if handler is new_handler:
+                break
+        else:
+            self.event_handlers.append(new_handler)
 
     @property
     def kline_stream_name(self) -> str:
@@ -35,7 +54,11 @@ class CandleLiveTimeline:
         if self.current_candle.kline_closed:
             self.candle_timeline.append(
                 self._extract_kline_fields(self.current_candle))
-            if not self.is_ready:
+
+            if self.is_ready:
+                for subscriber in self.event_handlers:
+                    subscriber.on_candle(self.candle_timeline[-1])
+            else:
                 asyncio.create_task(self._supplement_earlier_candles())
 
     @staticmethod
@@ -97,25 +120,32 @@ class CandleLiveTimeline:
 
 
 class MarketFeed:
-    def __init__(self, symbols: typing.Sequence[str]):
-        self.candle_timelines = {
-            s: CandleLiveTimeline(s) for s in symbols
-        }
+    def __init__(self, client: binance.Client):
+        self.client = client
+        self.candle_timelines: typing.Dict[str, CandleLiveTimeline] = {}
 
     @property
     def symbols(self) -> typing.Set[str]:
         return set(self.candle_timelines)
 
-    def register_for_candles(
+    def register_handler(
         self,
-        client: binance.Client
+        symbol: str,
+        handler: MarketFeedEventHandler
     ) -> None:
-        for timeline in self.candle_timelines.values():
-            timeline.binance_client = client
-            client.events.register_event(
+        if symbol not in self.candle_timelines:
+            if symbol not in self.client.symbols:
+                raise ValueError(
+                    f'Symbol not supported by the exchange: {symbol}')
+            timeline = CandleLiveTimeline(symbol, (handler,))
+            timeline.binance_client = self.client
+            self.candle_timelines[symbol] = timeline
+            self.client.events.register_event(
                 timeline.on_kline,
                 timeline.kline_stream_name
             )
+        else:
+            self.candle_timelines[symbol].add_event_handler(handler)
 
     def get_latest_candles_for_symbol(self, symbol: str):
         timeline = self.candle_timelines[symbol]
