@@ -33,6 +33,7 @@ async def status():
 @app.route('/start_telegram_strategy')
 async def start_telegram_strategy(parsed_data):
     parsed_data_example = {
+        'Symbol': 'ADA',
         'entry1': 1.01,
         'entry2': 1.02,
         'TP1': 1.04,
