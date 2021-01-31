@@ -8,3 +8,5 @@ https://testnet.binance.vision/#faq-periodic-reset
 * Provide some security for our REST API.
 * Also subscribe for order book updates. Then instead of entering positions
 using MKT orders, send IOC which takes into account the available liquidity.
+* Specify schema explicitly for requests. Possibly use: https://pypi.org/project/flask-expects-json/
+Flask will then have to be mocked: https://stackoverflow.com/a/30380016/1268949
