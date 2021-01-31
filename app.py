@@ -31,7 +31,15 @@ async def status():
 
 @app.route('/start_telegram_strategy')
 async def start_telegram_strategy(parsed_data):
+    parsed_data_example = {
+        'entry1': 1.01,
+        'entry2': 1.02,
+        'TP1': 1.04,
+        'TP2': 1.03,
+        'SL': 0.97,
+    }
     #TODO implement
+    pass
 
 @app.route('/market/candles/<symbol>')
 async def symbol_candles(symbol: str):
