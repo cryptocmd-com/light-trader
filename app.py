@@ -29,6 +29,9 @@ async def status():
         'overall': 'ok'
     }
 
+@app.route('/start_telegram_strategy')
+async def start_telegram_strategy(parsed_data):
+    #TODO implement
 
 @app.route('/market/candles/<symbol>')
 async def symbol_candles(symbol: str):
