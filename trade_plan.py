@@ -11,13 +11,13 @@ class TradePlanAtUnspecifiedPrice:
     entry_quantity: Decimal
     take_profit_price: Decimal
     stop_loss_price: Decimal
-    action: str = field(init=False, repr=False)
+    action: str = field(init=False)
 
     def __post_init__(self):
         if self.take_profit_price > self.stop_loss_price:
-            action = 'BUY'
+            self.action = 'BUY'
         elif self.take_profit_price < self.stop_loss_price:
-            action = 'SELL'
+            self.action = 'SELL'
         else:
             raise ValueError(
                 'Invalid trade plan: take-profit and stop-loss prices must differ')
