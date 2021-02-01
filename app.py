@@ -64,7 +64,7 @@ async def symbol_candles(symbol: str):
             'candles': binance_trader.market.get_latest_candles_for_symbol(symbol_uc)
         }
     except KeyError:
-        if symbol_lc not in binance_trader.market.symbols:
+        if symbol_uc not in binance_trader.market.symbols:
             abort(http.HTTPStatus.NOT_FOUND,
                   f'Not listening for symbol: {symbol}')
         raise
