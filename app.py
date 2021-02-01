@@ -58,10 +58,10 @@ async def strategy_advice_telegram():
 
 @app.route('/market/candles/<symbol>')
 async def symbol_candles(symbol: str):
-    symbol_lc = symbol.lower()
+    symbol_uc = symbol.upper()
     try:
         return {
-            'candles': binance_trader.market.get_latest_candles_for_symbol(symbol_lc)
+            'candles': binance_trader.market.get_latest_candles_for_symbol(symbol_uc)
         }
     except KeyError:
         if symbol_lc not in binance_trader.market.symbols:
