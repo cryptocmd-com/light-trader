@@ -3,9 +3,11 @@ import logging
 import http
 
 from dotenv import load_dotenv
-from quart import Quart, abort
+from quart import Quart, abort, request
 from quart_compress import Compress
 import binance_trader
+import strategy_external_advice
+
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -30,18 +32,28 @@ async def status():
     }
 
 
-@app.route('/start_telegram_strategy')
-async def start_telegram_strategy(parsed_data):
-    parsed_data_example = {
-        'Symbol': 'ADA',
-        'entry1': 1.01,
-        'entry2': 1.02,
-        'TP1': 1.04,
-        'TP2': 1.03,
-        'SL': 0.97,
-    }
-    #TODO implement
-    pass
+@app.route('/strategy_advice/telegram/', methods=['POST'])
+async def strategy_advice_telegram():
+    request_json = await request.get_json(force=True)
+    symbols = request_json.get('symbols', [])
+    if 'symbol' in request_json and request_json['symbol'] not in symbols:
+        symbols.append(request_json['symbol'])
+
+    if not symbols:
+        abort(
+            http.HTTPStatus.BAD_REQUEST,
+            'No symbol(s) specified in the request')
+    try:
+        new_strategy = strategy_external_advice.StrategyExternalAdvice(
+            binance_trader.executor,
+            request_json
+        )
+        new_strategy_uuid = binance_trader.add_strategy(symbols, new_strategy)
+        return (
+            {'strategy_uuid': new_strategy_uuid},
+            http.HTTPStatus.CREATED)
+    except (ValueError, TypeError) as e:
+        abort(http.HTTPStatus.BAD_REQUEST, str(e))
 
 
 @app.route('/market/candles/<symbol>')

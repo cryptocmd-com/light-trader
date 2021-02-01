@@ -1,0 +1,12 @@
+POST http://127.0.0.1:5000/strategy_advice/telegram/
+Content-Type: application/json
+
+{ "symbol": "BTCUSDT", "TP1": "36050", "SL1": 29100 }
+
+###
+
+POST http://127.0.0.1:5000/strategy_advice/telegram/
+Content-Type: application/json
+
+{ "symbol": "ETHUSDT", "TP1": "1311.5", "SL1": 1112 }
+

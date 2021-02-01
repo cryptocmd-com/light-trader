@@ -111,7 +111,11 @@ class CandleLiveTimeline:
             self.candle_timeline.extendleft(
                 dict(collections.ChainMap(
                     dict(zip(column_names, c)),
-                    {'first_trade_id': None, 'last_trade_id': None},
+                    {
+                        'first_trade_id': None,
+                        'last_trade_id': None,
+                        'symbol': earliest_available['symbol']
+                    },
                     earliest_available))
                 for c in reversed(candles) if c[0] < earliest_available['start_time']
             )
@@ -123,6 +127,7 @@ class MarketFeed:
     def __init__(self, client: binance.Client):
         self.client = client
         self.candle_timelines: typing.Dict[str, CandleLiveTimeline] = {}
+        self.market_events_listener_task = None
 
     @property
     def symbols(self) -> typing.Set[str]:
@@ -144,6 +149,10 @@ class MarketFeed:
                 timeline.on_kline,
                 timeline.kline_stream_name
             )
+            if self.market_events_listener_task is not None:
+                self.market_events_listener_task.cancel()
+            self.market_events_listener_task = asyncio.create_task(
+                self.client.start_market_events_listener())
         else:
             self.candle_timelines[symbol].add_event_handler(handler)
 
