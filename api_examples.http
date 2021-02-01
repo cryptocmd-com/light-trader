@@ -19,8 +19,17 @@ Content-Type: application/json
 { "symbol": "ETHUSDT", "TP1": "13.11.5", "SL1": 1112 }
 
 ###
+# Bad request: unknown currency
+
+POST http://127.0.0.1:5000/strategy_advice/telegram/
+Content-Type: application/json
+
+{ "symbol": "ETHUSD", "TP1": "1311.5", "SL1": 1112 }
+
+###
 
 GET http://127.0.0.1:5000/market/candles/BTCUSDT
+
 ###
 
 GET http://127.0.0.1:5000/market/candles/ETHUSDT
