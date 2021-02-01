@@ -3,7 +3,7 @@ import logging
 import http
 
 from dotenv import load_dotenv
-from quart import Quart, abort, request
+from quart import Quart, abort, request, jsonify
 from quart_compress import Compress
 import binance_trader
 import strategy_external_advice
@@ -23,6 +23,16 @@ async def startup():
     loop = asyncio.get_event_loop()
     loop.create_task(binance_trader.start())
     logger.info('starting loop')
+
+
+@app.errorhandler(http.HTTPStatus.NOT_FOUND)
+def resource_not_found(e):
+    return jsonify(error=e.description), http.HTTPStatus.NOT_FOUND
+
+
+@app.errorhandler(http.HTTPStatus.BAD_REQUEST)
+def bad_request(e):
+    return jsonify(error=e.description), http.HTTPStatus.BAD_REQUEST
 
 
 @app.route('/status')
