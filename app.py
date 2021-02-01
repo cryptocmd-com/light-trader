@@ -52,7 +52,7 @@ async def strategy_advice_telegram():
         return (
             {'strategy_uuid': new_strategy_uuid},
             http.HTTPStatus.CREATED)
-    except (ValueError, TypeError) as e:
+    except (ValueError, TypeError, ArithmeticError) as e:
         abort(http.HTTPStatus.BAD_REQUEST, str(e))
 
 
