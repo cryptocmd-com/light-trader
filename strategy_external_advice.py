@@ -13,6 +13,7 @@ class StrategyExternalAdvice(strategy_base.StrategyBase):
         executor: strategy_base.TradePlanExecutor,
         advice: dict
     ):
+        # TODO: Check arguments. If they're not satisfactory raise ValueError
         super().__init__(executor)
         self.entry_quantity = Decimal('0.01')
         self.take_profit_price = Decimal(advice.get('TP1', '35000'))
@@ -21,6 +22,8 @@ class StrategyExternalAdvice(strategy_base.StrategyBase):
     def plan_trade(self, candle: dict):
         # To log messages use e.g. logger.info( ... )
 
+        # If not trade is to be exdcuted, return None
+        # Else, return an object as-per the example below
         return strategy_base.TradePlanAtUnspecifiedPrice(
             symbol=candle['symbol'],
             entry_quantity=self.entry_quantity,
