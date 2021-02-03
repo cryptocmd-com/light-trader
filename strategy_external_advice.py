@@ -1,5 +1,9 @@
+import logging
 from decimal import Decimal
 import strategy_base
+
+
+logger = logging.getLogger(__name__)
 
 
 class StrategyExternalAdvice(strategy_base.StrategyBase):
@@ -15,6 +19,8 @@ class StrategyExternalAdvice(strategy_base.StrategyBase):
         self.stop_loss_price = Decimal(advice.get('SL1', '28000'))
 
     def plan_trade(self, candle: dict):
+        # To log messages use e.g. logger.info( ... )
+
         return strategy_base.TradePlanAtUnspecifiedPrice(
             symbol=candle['symbol'],
             entry_quantity=self.entry_quantity,
