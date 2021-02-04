@@ -1,8 +1,10 @@
 import os
 import logging
+from posix import environ
 import typing
 import uuid
 
+import toml
 import binance
 
 import market_data
@@ -12,15 +14,25 @@ import strategy_base
 
 logger = logging.getLogger(__name__)
 
+config = None
 market = None
 executor = None
+connection_type = None
 strategies: typing.Dict[uuid.UUID, strategy_base.StrategyBase] = {}
 
 
 async def get_client() -> binance.Client:
+    extra_args = {}
+    if connection_type is None:
+        logger.warning('No connection type is specified')
+    if connection_type != 'production':
+        extra_args['endpoint'] = 'https://testnet.binance.vision'
+    logger.info('Starting Binance client with extra args: %s', str(extra_args))
+
     client = binance.Client(
         os.environ.get('BINANCE_API_KEY'),
-        os.environ.get('BINANCE_API_SECRET')
+        os.environ.get('BINANCE_API_SECRET'),
+        **extra_args
     )
     await client.load()
     return client
@@ -43,7 +55,17 @@ def add_strategy(
     return new_uuid
 
 
+def load_config():
+    config_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), 'config.toml')
+    global config
+    config = toml.load(config_path)
+    global connection_type
+    connection_type = config.get('binance', {}).get('connection', 'test')
+
+
 async def start():
+    load_config()
     client = await get_client()
     global market
     market = market_data.MarketFeed(client)

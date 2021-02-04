@@ -4,4 +4,5 @@ binance.py==1.7.0
 # For Binance
 aiohttp==3.7.3
 
+toml==0.10.2
 python-dotenv==0.15.0

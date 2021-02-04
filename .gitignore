@@ -3,6 +3,7 @@
 .env.prod*
 .env.test*
 .env.staging*
+config.toml
 .vscode/
 .idea
 __pycache__/
