@@ -2,11 +2,13 @@ import asyncio
 import logging
 import http
 
+import quart.flask_patch
 from quart import Quart, abort, request, jsonify
 from quart_compress import Compress
+
 import binance_trader
 import strategy_external_advice
-
+from auth import auth
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,6 +43,7 @@ async def status():
 
 
 @app.route('/strategy_advice/telegram/', methods=['POST'])
+@auth.login_required
 async def strategy_advice_telegram():
     request_json = await request.get_json(force=True)
     symbols = request_json.get('symbols', [])

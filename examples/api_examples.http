@@ -5,6 +5,7 @@
 
 POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 { "symbol": "BTCUSDT", "TP1": "36050", "SL1": 29100 }
 
@@ -12,14 +13,25 @@ Content-Type: application/json
 
 POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 { "symbol": "ETHUSDT", "TP1": "1311.5", "SL1": 1112 }
+
+###
+# Unauthorized request, should fail with HTTP 401
+
+POST {{baseUrl}}/strategy_advice/telegram/
+Content-Type: application/json
+
+{ "symbol": "ETHUSDT", "TP1": "1311.5", "SL1": 1112 }
+
 
 ###
 # Bad request: decimal conversion error
 
 POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 { "symbol": "ETHUSDT", "TP1": "13.11.5", "SL1": 1112 }
 
@@ -28,6 +40,7 @@ Content-Type: application/json
 
 POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 { "symbol": "ETHUSD", "TP1": "1311.5", "SL1": 1112 }
 

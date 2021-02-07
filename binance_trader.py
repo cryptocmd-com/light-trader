@@ -9,6 +9,7 @@ import binance
 import market_data
 import trade_plan_executor
 import strategy_base
+import auth
 
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ config = None
 market = None
 executor = None
 connection_params = {}
+user_passwords: typing.Dict[str, str] = {}
 strategies: typing.Dict[uuid.UUID, strategy_base.StrategyBase] = {}
 
 
@@ -67,6 +69,10 @@ def load_config():
         'api_key': binance.get('api_key'),
         'api_secret': binance.get('api_secret')
     }
+
+    global user_passwords
+    user_passwords = config.get('user_passwords', {})
+    auth.setup_auth(user_passwords)
 
 
 async def start():
