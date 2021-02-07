@@ -26,7 +26,7 @@ async def get_client() -> binance.Client:
     extra_args = {}
     if connection_params.get('type') is None:
         logger.warning('No connection type is specified')
-    if connection_params.get('type') != 'production':
+    if connection_params.get('type').lower() != 'live':
         extra_args['endpoint'] = 'https://testnet.binance.vision'
     logger.info('Starting Binance client with extra args: %s', str(extra_args))
 
