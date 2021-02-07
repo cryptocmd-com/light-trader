@@ -1,9 +1,9 @@
 .venv/
-.env
-.env.prod*
-.env.test*
-.env.staging*
-config.toml
+examples/.env
+examples/.env.prod*
+examples/.env.test*
+examples/.env.staging*
+config*.toml
 .vscode/
 .idea
 __pycache__/

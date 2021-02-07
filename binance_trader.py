@@ -1,6 +1,5 @@
 import os
 import logging
-from posix import environ
 import typing
 import uuid
 
@@ -17,21 +16,21 @@ logger = logging.getLogger(__name__)
 config = None
 market = None
 executor = None
-connection_type = None
+connection_params = {}
 strategies: typing.Dict[uuid.UUID, strategy_base.StrategyBase] = {}
 
 
 async def get_client() -> binance.Client:
     extra_args = {}
-    if connection_type is None:
+    if connection_params.get('type') is None:
         logger.warning('No connection type is specified')
-    if connection_type != 'production':
+    if connection_params.get('type') != 'production':
         extra_args['endpoint'] = 'https://testnet.binance.vision'
     logger.info('Starting Binance client with extra args: %s', str(extra_args))
 
     client = binance.Client(
-        os.environ.get('BINANCE_API_KEY'),
-        os.environ.get('BINANCE_API_SECRET'),
+        connection_params['api_key'],
+        connection_params['api_secret'],
         **extra_args
     )
     await client.load()
@@ -60,8 +59,14 @@ def load_config():
         os.path.dirname(os.path.realpath(__file__)), 'config.toml')
     global config
     config = toml.load(config_path)
-    global connection_type
-    connection_type = config.get('binance', {}).get('connection', 'test')
+
+    binance = config.get('binance', {})
+    global connection_params
+    connection_params = {
+        'type': binance.get('connection', 'test'),
+        'api_key': binance.get('api_key'),
+        'api_secret': binance.get('api_secret')
+    }
 
 
 async def start():

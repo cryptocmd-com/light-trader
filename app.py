@@ -2,14 +2,12 @@ import asyncio
 import logging
 import http
 
-from dotenv import load_dotenv
 from quart import Quart, abort, request, jsonify
 from quart_compress import Compress
 import binance_trader
 import strategy_external_advice
 
 
-load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
