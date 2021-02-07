@@ -64,6 +64,8 @@ async def strategy_advice_telegram():
             {'strategy_uuid': new_strategy_uuid},
             http.HTTPStatus.CREATED)
     except (ValueError, TypeError, ArithmeticError) as e:
+        logger.exception(
+            "Strategy advice rejected as malformed or semantically invalid")
         abort(http.HTTPStatus.BAD_REQUEST, str(e))
 
 
