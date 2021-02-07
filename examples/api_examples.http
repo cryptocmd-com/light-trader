@@ -1,11 +1,16 @@
-POST http://127.0.0.1:5000/strategy_advice/telegram/
+
+@baseUrl = http://127.0.0.1:5000
+
+###
+
+POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 
 { "symbol": "BTCUSDT", "TP1": "36050", "SL1": 29100 }
 
 ###
 
-POST http://127.0.0.1:5000/strategy_advice/telegram/
+POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 
 { "symbol": "ETHUSDT", "TP1": "1311.5", "SL1": 1112 }
@@ -13,7 +18,7 @@ Content-Type: application/json
 ###
 # Bad request: decimal conversion error
 
-POST http://127.0.0.1:5000/strategy_advice/telegram/
+POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 
 { "symbol": "ETHUSDT", "TP1": "13.11.5", "SL1": 1112 }
@@ -21,15 +26,15 @@ Content-Type: application/json
 ###
 # Bad request: unknown currency
 
-POST http://127.0.0.1:5000/strategy_advice/telegram/
+POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 
 { "symbol": "ETHUSD", "TP1": "1311.5", "SL1": 1112 }
 
 ###
 
-GET http://127.0.0.1:5000/market/candles/BTCUSDT
+GET {{baseUrl}}/market/candles/BTCUSDT
 
 ###
 
-GET http://127.0.0.1:5000/market/candles/ETHUSDT
+GET {{baseUrl}}/market/candles/ETHUSDT
