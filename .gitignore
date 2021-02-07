@@ -1,4 +1,4 @@
-.venv/
+.venv*/
 examples/.env
 examples/.env.prod*
 examples/.env.test*
