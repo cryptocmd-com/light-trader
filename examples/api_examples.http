@@ -51,3 +51,8 @@ GET {{baseUrl}}/market/candles/BTCUSDT
 ###
 
 GET {{baseUrl}}/market/candles/ETHUSDT
+
+###
+# Should fail since we're not listening to ETHUSD
+
+GET {{baseUrl}}/market/candles/ETHUSD
