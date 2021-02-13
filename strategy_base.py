@@ -20,6 +20,11 @@ class StrategyBase(
         self.position = Decimal(0)
         # TODO: Determine maximum position
 
+    @property
+    def client_order_id_prefix(self) -> str:
+        # TODO: Use a unique ID
+        return "ABCD"
+
     @abc.abstractmethod
     def plan_trade(sel, candle: dict) -> typing.Optional[
             TradePlanAtUnspecifiedPrice]:
@@ -53,7 +58,8 @@ class StrategyBase(
         position_increment = await self.executor.execute_plan_at_market_price(
             self, trade_plan)
         self.position += position_increment
-        logger.info("Executed trade %s", repr(trade_plan))
+        logger.info("Position is %s after executing trade %s",
+                    self.position, repr(trade_plan))
         return True
 
     # FIXME: Change the position based on the amount executed

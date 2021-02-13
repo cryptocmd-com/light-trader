@@ -39,6 +39,11 @@ async def get_client() -> binance.Client:
     return client
 
 
+# FIXME: Use a shorter identifier which can be encoded into client order IDs.
+# E.g.: A 32-bit integer encoded as base58 (6 characters)
+# using e.g.: https://pypi.org/project/python-baseconv/
+
+
 def add_strategy(
     input_symbols: typing.Sequence[str],
     strategy: strategy_base.StrategyBase
@@ -75,9 +80,18 @@ def load_config():
     auth.setup_auth(user_passwords)
 
 
+async def on_order_executed(
+    execution_report: binance.events.OrderUpdateWrapper
+):
+    logger.info('Order executed %s', execution_report)
+
+
 async def start():
     load_config()
     client = await get_client()
+    client.events.register_user_event(
+        on_order_executed, "executionReport"
+    )
     global market
     market = market_data.MarketFeed(client)
     global executor
