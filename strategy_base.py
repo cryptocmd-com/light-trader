@@ -3,6 +3,7 @@ import asyncio
 import logging
 import abc
 from decimal import Decimal
+import baseconv
 
 from trade_plan import TradePlanAtUnspecifiedPrice
 from trade_plan_executor import TradePlanExecutor, TradeEventHandler
@@ -23,7 +24,7 @@ class StrategyBase(
     @property
     def client_order_id_prefix(self) -> str:
         # TODO: Use a unique ID
-        return "ABCD"
+        return baseconv.base58.encode(id(self))
 
     @abc.abstractmethod
     def plan_trade(sel, candle: dict) -> typing.Optional[

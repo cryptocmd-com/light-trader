@@ -59,9 +59,9 @@ async def strategy_advice_telegram():
             binance_trader.executor,
             request_json
         )
-        new_strategy_uuid = binance_trader.add_strategy(symbols, new_strategy)
+        new_strategy_id = binance_trader.add_strategy(symbols, new_strategy)
         return (
-            {'strategy_uuid': new_strategy_uuid},
+            {'strategy_id': new_strategy_id},
             http.HTTPStatus.CREATED)
     except (ValueError, TypeError, ArithmeticError) as e:
         logger.exception(

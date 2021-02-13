@@ -47,18 +47,17 @@ async def get_client() -> binance.Client:
 def add_strategy(
     input_symbols: typing.Sequence[str],
     strategy: strategy_base.StrategyBase
-) -> uuid.UUID:
-    new_uuid = uuid.uuid1()
-    strategies[new_uuid] = strategy
+) -> str:
     for symbol in input_symbols:
         # FIXME: Roll-back if registration fails after registering
         # only some symbols.
         market.register_handler(symbol.upper(), strategy)
 
     logger.info(
-        'Strategy of class %s registered successfully with UUID %s',
-        strategy.__class__.__name__, new_uuid)
-    return new_uuid
+        'Strategy of class %s registered successfully with ID %s',
+        strategy.__class__.__name__, strategy.client_order_id_prefix)
+    strategies[strategy.client_order_id_prefix] = strategy
+    return strategy.client_order_id_prefix
 
 
 def load_config():
