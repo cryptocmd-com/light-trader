@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 class TradeEventHandler(abc.ABC):
     @abc.abstractmethod
-    def on_take_profit_executed(tp):
+    def on_take_profit_executed(self, tp):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def on_stop_loss_executed(sl):
+    def on_stop_loss_executed(self, sl):
         raise NotImplementedError
 
     @property

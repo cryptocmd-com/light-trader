@@ -27,7 +27,7 @@ class StrategyBase(
         return baseconv.base58.encode(id(self))
 
     @abc.abstractmethod
-    def plan_trade(sel, candle: dict) -> typing.Optional[
+    def plan_trade(self, candle: dict) -> typing.Optional[
             TradePlanAtUnspecifiedPrice]:
         raise NotImplementedError
 
@@ -64,9 +64,9 @@ class StrategyBase(
         return True
 
     # FIXME: Change the position based on the amount executed
-    def on_take_profit_executed(tp):
+    def on_take_profit_executed(self, tp):
         pass
 
-    def on_stop_loss_executed(sl):
+    def on_stop_loss_executed(self, sl):
         pass
 
