@@ -7,3 +7,4 @@ config*.toml
 .vscode/
 .idea
 __pycache__/
+config.template.toml
