@@ -29,7 +29,7 @@ class TradeEventHandler(abc.ABC):
 class TradePlanExecutor:
     def __init__(self, client: binance.Client):
         self.client = client
-        self.order_counter = 1
+        self.order_counter = 0
 
     # TODO: Subscribe to execution reports and somehow adjust the strategy's position
 
@@ -40,26 +40,39 @@ class TradePlanExecutor:
     ) -> Decimal:
         'Execute a trade plan using a market order, and return the position increment'
 
+        order_counter = self._get_next_order_counter()
         new_client_order_id = (
-            f'{callback_handler.client_order_id_prefix}_{self.order_counter:06}')
-        self.order_counter += 1
-        response = await self.client.create_order(
-            plan.symbol,
-            getattr(binance.Side, plan.action).value,
-            binance.OrderType.MARKET.value,
-            quantity=str(plan.entry_quantity),
-            new_client_order_id=new_client_order_id
-        )
+            f'{callback_handler.client_order_id_prefix}_{order_counter:06}')
+        try:
+            response = await self.client.create_order(
+                plan.symbol,
+                getattr(binance.Side, plan.action).value,
+                binance.OrderType.MARKET.value,
+                quantity=str(plan.entry_quantity),
+                new_client_order_id=new_client_order_id
+            )
 
-        if response.get('status') != 'FILLED':
-            logger.error('Market order %s was not filled: %s',
-                         new_client_order_id, json.dumps(response))
-        elif response.get('origQty') != response.get('executedQty'):
-            logger.warning('Market order %s was only partially filled: %s',
-                           new_client_order_id, json.dumps(response))
+            if response.get('status') != 'FILLED':
+                logger.error('Market order %s was not filled: %s',
+                            new_client_order_id, json.dumps(response))
+            elif response.get('origQty') != response.get('executedQty'):
+                logger.warning('Market order %s was only partially filled: %s',
+                            new_client_order_id, json.dumps(response))
+            else:
+                logger.info('Executing plan %s and got response %s',
+                            repr(plan), json.dumps(response))
 
-        total_fill = Decimal(response.get('executedQty'))
+            total_fill = Decimal(response.get('executedQty'))
+        except binance.errors.BinanceError:
+            logger.exception(
+                'Sending order %s failed', new_client_order_id)
+
         return {'BUY': 1, 'SELL': -1}[response.get('side')] * total_fill
         # TODO: Capture the fills in the format:
         # [{'price': '7000.02000000', 'qty': '0.01000000',
         # 'commission': '0.00000000', 'commissionAsset': 'BTC', 'tradeId': 2987}]
+
+    def _get_next_order_counter(self) -> int:
+        self.order_counter += 1
+        return self.order_counter
+
