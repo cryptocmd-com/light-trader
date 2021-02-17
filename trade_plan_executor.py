@@ -63,6 +63,8 @@ class TradePlanExecutor:
                             repr(plan), json.dumps(response))
 
             total_fill = Decimal(response.get('executedQty'))
+            if total_fill != 0:
+                await self._send_closing_order(plan, response)
         except binance.errors.BinanceError:
             logger.exception(
                 'Sending order %s failed', new_client_order_id)
@@ -76,3 +78,31 @@ class TradePlanExecutor:
         self.order_counter += 1
         return self.order_counter
 
+    async def _send_closing_order(
+        self,
+        plan: trade_plan.TradePlanAtUnspecifiedPrice,
+        entry_fill: dict
+    ) -> dict:
+        '''Send an order to close the position that was opened by the entry_order
+        "entry_fill"
+        '''
+
+        strategy_id = entry_fill['clientOrderId'].split('_')[0]
+        oco_client_order_id = f'{strategy_id}_{self._get_next_order_counter()}'
+        # stop_client_order_id = f'{strategy_id}_{self._get_next_order_counter()}'
+
+        closing_side = {
+            'BUY': 'SELL',
+            'SELL': 'BUY'
+        }[entry_fill['side']]
+        response = await self.client.create_oco(
+            entry_fill['symbol'],
+            closing_side,
+            entry_fill['executedQty'],
+            plan.take_profit_price,
+            plan.stop_loss_price,
+            list_client_order_id=oco_client_order_id
+        )
+
+        logger.info('Sent OCO: %s', json.dumps(response))
+        return response
