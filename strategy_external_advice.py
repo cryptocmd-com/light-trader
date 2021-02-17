@@ -22,7 +22,7 @@ class StrategyExternalAdvice(strategy_base.StrategyBase):
     def plan_trade(self, candle: dict):
         # To log messages use e.g. logger.info( ... )
 
-        # If not trade is to be exdcuted, return None
+        # If no trade is to be executed, return None
         # Else, return an object as-per the example below
         return strategy_base.TradePlanAtUnspecifiedPrice(
             symbol=candle['symbol'],
