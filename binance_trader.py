@@ -7,7 +7,6 @@ import toml
 import binance
 
 import market_data
-import trade_plan_executor
 import strategy_base
 import auth
 
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 config = None
 market = None
-executor = None
+client = None
 connection_params = {}
 user_passwords: typing.Dict[str, str] = {}
 strategies: typing.Dict[uuid.UUID, strategy_base.StrategyBase] = {}
@@ -87,11 +86,7 @@ async def on_order_executed(
 
 async def start():
     load_config()
+    global client
     client = await get_client()
-    client.events.register_user_event(
-        on_order_executed, "executionReport"
-    )
     global market
     market = market_data.MarketFeed(client)
-    global executor
-    executor = trade_plan_executor.TradePlanExecutor(client)

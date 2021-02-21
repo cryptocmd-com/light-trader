@@ -1,25 +1,37 @@
 import logging
 from decimal import Decimal
-import strategy_base
+
+import binance
+import trade_plan
+import strategy_price_swing
 MAX_QUANTITY = 1000
 
 logger = logging.getLogger(__name__)
 
 
-class StrategyExternalAdvice(strategy_base.StrategyBase):
+class StrategyExternalAdvice(strategy_price_swing.StrategyPriceSwing):
     'A stategy created by external advice'
     def __init__(
         self,
-        executor: strategy_base.TradePlanExecutor,
+        client: binance.Client,
         advice: dict
     ):
         # TODO: Check arguments. If they're not satisfactory raise ValueError
-        super().__init__(executor)
-        self.entry_quantity = Decimal('0.01')
-        self.take_profit_price = Decimal(advice.get('SL1'))
-        self.stop_loss_price = Decimal(advice.get('TP1'))
+        stop_loss_price = Decimal(advice.get('SL1'))
+        take_profit_price = Decimal(advice.get('TP1'))
+        entry_price = (take_profit_price + stop_loss_price) / 2   # Use real value!
+        plan = trade_plan.TradePlanAtTargetPrice(
+            advice['symbol'],
+            entry_quantity=Decimal('0.01'),
+            take_profit_price=take_profit_price,
+            stop_loss_price=stop_loss_price,
+            entry_price=entry_price
+        )
+
+        super().__init__(client, plan)
 
 
+'''
     def validate_external_command(self):
         if (not self.entry_quantity > 0):
                        logger.error(
@@ -29,16 +41,4 @@ class StrategyExternalAdvice(strategy_base.StrategyBase):
                        logger.error(
                 "Ignored trade-plan, quantaty bellow max: %s",
                 repr(self.entry_quantity))
-
-
-    def plan_trade(self, candle: dict):
-        # To log messages use e.g. logger.info( ... )
-        # If no trade is to be executed, return None
-        # Else, return an object as-per the example below
-        self.validate_external_command()
-        return strategy_base.TradePlanAtUnspecifiedPrice(
-            symbol=candle['symbol'],
-            entry_quantity=self.entry_quantity,
-            take_profit_price=self.take_profit_price,
-            stop_loss_price=self.stop_loss_price
-        )
+'''

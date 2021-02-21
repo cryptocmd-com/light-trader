@@ -56,7 +56,7 @@ async def strategy_advice_telegram():
             'No symbol(s) specified in the request')
     try:
         new_strategy = strategy_external_advice.StrategyExternalAdvice(
-            binance_trader.executor,
+            binance_trader.client,
             request_json
         )
         new_strategy_id = binance_trader.add_strategy(symbols, new_strategy)
