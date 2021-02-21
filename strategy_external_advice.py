@@ -16,13 +16,25 @@ class StrategyExternalAdvice(strategy_price_swing.StrategyPriceSwing):
         client: binance.Client,
         advice: dict
     ):
-        # TODO: Check arguments. If they're not satisfactory raise ValueError
-        stop_loss_price = Decimal(advice.get('SL1'))
-        take_profit_price = Decimal(advice.get('TP1'))
-        entry_price = (take_profit_price + stop_loss_price) / 2   # Use real value!
+        try:
+            symbol = str(advice['symbol'])
+            for name, value in advice.items():
+                if isinstance(value, float):
+                    raise TypeError(
+                        f'Value of {name} is given as a float {value}. Use integer or string instead')
+            stop_loss_price = Decimal(advice['SL1'])
+            take_profit_price = Decimal(advice['TP1'])
+            entry_price = Decimal(advice['entry'])
+            entry_quantity = Decimal(advice['quantity'])
+        except KeyError as ex:
+            raise ValueError(f'Missing mandatory field: {ex.args[0]}') from ex
+        except TypeError:
+            logger.exception('A value could not be converted to decimal')
+            raise
+
         plan = trade_plan.TradePlanAtTargetPrice(
-            advice['symbol'],
-            entry_quantity=Decimal('0.01'),
+            symbol,
+            entry_quantity=entry_quantity,
             take_profit_price=take_profit_price,
             stop_loss_price=stop_loss_price,
             entry_price=entry_price

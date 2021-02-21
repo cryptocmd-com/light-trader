@@ -8,7 +8,13 @@ POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
-{ "symbol": "BTCUSDT", "TP1": "36050", "SL1": 29100 }
+{
+    "symbol": "BTCUSDT",
+    "entry": "32050.0",
+    "quantity": "0.02",
+    "TP1": "36050",
+    "SL1": 29100
+}
 
 ###
 # Short BTCUSDT
@@ -17,7 +23,34 @@ POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
+{
+    "symbol": "BTCUSDT",
+    "entry": "32050.0",
+    "quantity": "0.02",
+    "SL1": "36050",
+    "TP1": 29100
+}
+
+###
+# Bad request - missing mandatory fields
+
+POST {{baseUrl}}/strategy_advice/telegram/
+Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
 { "symbol": "BTCUSDT", "SL1": "36050", "TP1": 29100 }
+
+
+###
+# Bad request - uses float
+
+POST {{baseUrl}}/strategy_advice/telegram/
+Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+{ "symbol": "BTCUSDT", "SL1": "36050", "TP1": 29100.0 }
+
+
 
 ###
 
