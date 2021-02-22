@@ -80,7 +80,7 @@ class StrategyPriceSwing(
 
     @property
     def stop_loss_price(self) -> decimal.Decimal:
-        return self.stop_loss_price
+        return self.plan.stop_loss_price
 
     # TODO: Support trading multiple symbols
     @property
@@ -108,7 +108,7 @@ class StrategyPriceSwing(
 
     async def _open_position(self):
         response = await self.send_immediate_order(
-            'BUY', self.plan.quantity)
+            'BUY', self.plan.entry_quantity)
         self.on_order_response(response)
 
     async def _close_position(self):
