@@ -6,3 +6,6 @@ api_secret = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 [user_passwords]
 telegram = "xxxxxxxxx"
+
+[logging]
+level = "INFO"

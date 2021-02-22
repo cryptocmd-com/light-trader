@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import collections
 import http
 
 import quart.flask_patch
@@ -11,9 +12,24 @@ import strategy_external_advice
 from auth import auth
 
 
+def get_logging_level() -> int:
+    default_log_level = 'INFO'
+    config = binance_trader.read_config()
+    logging_section = collections.ChainMap(
+        config.get('logging', {}),
+        {'level': default_log_level}
+    )
+    logging_level = getattr(
+        logging,
+        logging_section['level'].upper(),
+        getattr(logging, default_log_level)
+    )
+    return logging_level
+
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=get_logging_level(),
     format='%(asctime)s:%(levelname)s:%(name)s:%(message)s'
 )
 

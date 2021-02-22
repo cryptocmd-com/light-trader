@@ -59,11 +59,15 @@ def add_strategy(
     return strategy.client_order_id_prefix
 
 
-def load_config():
+def read_config():
     config_path = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), 'config.toml')
+    return toml.load(config_path)
+
+
+def load_config():
     global config
-    config = toml.load(config_path)
+    config = read_config()
 
     binance = config.get('binance', {})
     global connection_params

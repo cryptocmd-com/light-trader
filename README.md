@@ -44,6 +44,8 @@ pip3 install -r requirements.txt
   * Set the TELEGRAM_USER_PASSWORD to the same value as the
   password you set for the `telegram` user in the `[user_passwords]`
   section of `config.toml`
+* Customize the log level if necessary, by setting the `level` entry
+  in the `logging` section of `config.toml`.
 * Add the directory for this project to your Visual Studio Code
   workspace.
 * Install the _REST Client_ extension for Visual Studio Code.
