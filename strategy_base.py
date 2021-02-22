@@ -19,20 +19,18 @@ class StrategyBase(
         self.position = Decimal(0)
         # TODO: Determine maximum position
 
+        self._order_id_sequence = (
+            f'{self.client_order_id_prefix}_{n:06}'
+            for n in itertools.count(1)
+        )
+
     @property
     def client_order_id_prefix(self) -> str:
         # TODO: Use a unique ID
         return baseconv.base58.encode(id(self))
 
-    # @abc.abstractmethod
-    # def plan_trade(self, candle: dict) -> typing.Optional[
-    #         TradePlanAtUnspecifiedPrice]:
-    #     raise NotImplementedError
-
-    def generate_order_id(self) -> typing.Generator[str, None, None]:
-        prefix = self.client_order_id_prefix
-        for n in itertools.count(1):
-            yield f'{prefix}_{n:06}'
+    def generate_order_id(self) -> str:
+        return next(self._order_id_sequence)
 
     def on_order_response(self, response: dict):
         'Called with the order execution info returned by Binance'

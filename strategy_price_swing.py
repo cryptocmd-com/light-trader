@@ -24,7 +24,7 @@ class ImmediateOrderExecutor(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def generate_order_id(self) -> typing.Generator[str, None, None]:
+    def generate_order_id(self) -> str:
         raise NotImplementedError
 
     async def send_immediate_order(
@@ -32,7 +32,7 @@ class ImmediateOrderExecutor(abc.ABC):
         side: str,
         quantity: decimal.Decimal
     ) -> dict:
-        new_client_order_id = next(self.generate_order_id())
+        new_client_order_id = self.generate_order_id()
         try:
             response = await self.client.create_order(
                 self.symbol_traded,
