@@ -11,7 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class MarketFeedEventHandler(abc.ABC):
-    def on_candle(self, candle: dict):
+    @abc.abstractmethod
+    async def on_candle(self, candle: dict):
         raise NotImplementedError
 
 
@@ -56,10 +57,13 @@ class CandleLiveTimeline:
                 self._extract_kline_fields(self.current_candle))
 
             if self.is_ready:
-                for subscriber in self.event_handlers:
+                on_candle_futures = [
                     subscriber.on_candle(self.candle_timeline[-1])
+                    for subscriber in self.event_handlers]
+                future = asyncio.wait(on_candle_futures)
             else:
-                asyncio.create_task(self._supplement_earlier_candles())
+                future = self._supplement_earlier_candles()
+            asyncio.create_task(future)
 
     @staticmethod
     def _extract_kline_fields(event: binance.events.KlineWrapper):

@@ -91,20 +91,15 @@ class StrategyPriceSwing(
     def symbols_monitored(self) -> typing.Set[str]:
         return {self.symbol_traded}
 
-    def on_candle(self, candle: dict):
-        future = None
+    async def on_candle(self, candle: dict) -> None:
         current_price = decimal.Decimal(candle['close_price'])
         if (self.position == 0 and
                 current_price <= self.plan.entry_price):
-            future = self._open_position()
+            await self._open_position()
         elif self.position != 0 and not (
             self.stop_loss_price < current_price < self.take_profit_price
         ):
-            future = self._close_position()
-
-        if future is not None:
-            # TODO: Retain the task object
-            asyncio.create_task(future)
+            await self._close_position()
 
     async def _open_position(self):
         response = await self.send_immediate_order(
