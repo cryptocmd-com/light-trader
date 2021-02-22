@@ -10,9 +10,12 @@ import binance_trader
 import strategy_external_advice
 from auth import auth
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s'
+)
 
 app = Quart(__name__)
 Compress(app)
@@ -84,4 +87,6 @@ async def symbol_candles(symbol: str):
 
 
 if __name__ == '__main__':
+    # FIXME: Configure the level from TOML
+    # logging.basicConfig(level=logging.DEBUG)
     app.run()
