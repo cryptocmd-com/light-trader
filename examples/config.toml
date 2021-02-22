@@ -1,0 +1,8 @@
+[binance]
+connection = "test"     # Valid values: test, live
+# Put valid API key and API secret values for the configuration to work
+api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+api_secret = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+[user_passwords]
+telegram = "xxxxxxxxx"

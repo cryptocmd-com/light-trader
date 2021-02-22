@@ -32,7 +32,7 @@ pip3 install -r requirements.txt
 * Set up the credentials for the server
   * Obtain Binance credentials. For testing and integration it's strongly advised
   to start with test credentials from https://dev.binance.vision
-* Copy `config.template.toml` to `config.toml` and customize it.
+* Copy `examples/config.toml` to `config.toml` and customize it.
   * Leave the connection setting as test, or change to 'live' if you want that.
   * Set `api_key` and `api_secret` to the value of an API key for
   the Binance environment you're using.
