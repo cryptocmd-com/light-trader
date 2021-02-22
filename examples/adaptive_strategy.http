@@ -1,0 +1,23 @@
+
+@baseUrl = http://127.0.0.1:5000
+@symbol = BTCUSDT
+
+###
+
+# @name getLatestCandle
+GET {{baseUrl}}/market/candles/{{symbol}}
+
+###
+
+# @name adaptiveStrategyId
+POST {{baseUrl}}/strategy_advice/telegram/
+Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+{
+    "symbol": "{{symbol}}",
+    "entry": "{{getLatestCandle.response.body.candles[0].close_price}}",
+    "quantity": "0.0019",
+    "TP1": "{{getLatestCandle.response.body.candles[0].high_price}}",
+    "SL1": "{{getLatestCandle.response.body.candles[0].low_price}}"
+}
