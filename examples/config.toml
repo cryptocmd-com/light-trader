@@ -4,6 +4,8 @@ connection = "test"     # Valid values: test, live
 api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 api_secret = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
+# User accounts and their corresponding passwords
+# in the form: user = "password"
 [user_passwords]
 telegram = "xxxxxxxxx"
 
