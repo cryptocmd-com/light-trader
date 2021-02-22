@@ -1,74 +1,33 @@
 import decimal
 import typing
-import asyncio
 import logging
-import abc
 
 import binance
+
 import strategy_base
 import trade_plan
+import Immediate_order_executor
 
 
 logger = logging.getLogger(__name__)
 
 
-# FIXME: Sort asynchronous execution so that this class
-# starts new tasks that send the commands to the exchange
-class ImmediateOrderExecutor(abc.ABC):
-    def __init__(self, client: binance.Client):
-        self.client = client
-
-    @property
-    @abc.abstractmethod
-    def symbol_traded(self) -> str:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def generate_order_id(self) -> str:
-        raise NotImplementedError
-
-    async def send_immediate_order(
-        self,
-        side: str,
-        quantity: decimal.Decimal
-    ) -> dict:
-        new_client_order_id = self.generate_order_id()
-        try:
-            response = await self.client.create_order(
-                self.symbol_traded,
-                getattr(binance.Side, side).value,
-                binance.OrderType.MARKET.value,
-                quantity=quantity,
-                new_client_order_id=new_client_order_id
-            )
-            return response
-
-        except binance.errors.BinanceError:
-            # TODO: Check whether it's safe to assume that the order
-            # was rejected and not executed.
-            logger.exception(
-                'Binance rejected order %s to %s %s %s',
-                new_client_order_id, side, quantity, self.symbol_traded)
-
-        return {
-            'clientOrderId': new_client_order_id,
-            'origQty': quantity,
-            'executedQty': 0,
-            'status': 'FAILED'
-        }
-
-
 class StrategyPriceSwing(
     strategy_base.StrategyBase,
-    ImmediateOrderExecutor
+    Immediate_order_executor.ImmediateOrderExecutor
 ):
+    '''StrategyPriceSwing: Base-class for strategies that attempt to
+    gain from a price swing, from an entry price to a target price.
+    Note: currently only long trades are supported.
+    '''
+
     def __init__(
         self,
         client: binance.Client,
         trade_plan: trade_plan.TradePlanAtTargetPrice
     ):
         strategy_base.StrategyBase.__init__(self)
-        ImmediateOrderExecutor.__init__(self, client)
+        Immediate_order_executor.ImmediateOrderExecutor.__init__(self, client)
         self.plan = trade_plan
         if self.plan.action != 'BUY':
             raise ValueError(
@@ -109,4 +68,3 @@ class StrategyPriceSwing(
     async def _close_position(self):
         response = await self.send_immediate_order('SELL', self.position)
         self.on_order_response(response)
-
