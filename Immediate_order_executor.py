@@ -36,6 +36,7 @@ class ImmediateOrderExecutor(abc.ABC):
                 getattr(binance.Side, side).value,
                 binance.OrderType.MARKET.value,
                 quantity=quantity,
+                response_type=binance.definitions.ResponseType.FULL.value,
                 new_client_order_id=new_client_order_id
             )
             return response
