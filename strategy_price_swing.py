@@ -55,10 +55,24 @@ class StrategyPriceSwing(
         if (self.position == 0 and
                 current_price <= self.plan.entry_price):
             await self._open_position()
+            logger.debug(
+                'Strategy %s opened position at price %s: BUY %s %s',
+                self.client_order_id_prefix,
+                current_price,
+                self.plan.entry_quantity,
+                self.symbol_traded
+            )
         elif self.position != 0 and not (
             self.stop_loss_price < current_price < self.take_profit_price
         ):
             await self._close_position()
+            logger.debug(
+                'Strategy %s closing position of %s %s at price %s',
+                self.client_order_id_prefix,
+                self.position,
+                self.symbol_traded,
+                current_price
+            )
         else:
             logger.debug(
                 'Strategy %s: Nothing to do for current_price %s',
@@ -68,15 +82,10 @@ class StrategyPriceSwing(
     async def _open_position(self):
         response = await self.send_immediate_order(
             'BUY', self.plan.entry_quantity)
-        logger.debug(
-            'Strategy %s opened position: BUY %s',
-            self.client_order_id_prefix, self.plan.entry_quantity)
         self.on_order_response(response)
 
     async def _close_position(self):
         position_reduction = self.position
-        response = await self.send_immediate_order('SELL', position_reduction)
-        logger.debug(
-            'Strategy %s closed position: SELL %s',
-            self.client_order_id_prefix, position_reduction)
+        side = 'BUY' if position_reduction < 0 else 'SELL'
+        response = await self.send_immediate_order(side, position_reduction)
         self.on_order_response(response)
