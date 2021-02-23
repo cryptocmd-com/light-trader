@@ -1,6 +1,6 @@
 
 @baseUrl = http://127.0.0.1:5000
-@symbol = BTCUSDT
+@symbol = BNBUSDT
 
 ###
 
@@ -17,7 +17,7 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 {
     "symbol": "{{symbol}}",
     "entry": "{{getLatestCandle.response.body.candles[0].close_price}}",
-    "quantity": "0.0019",
+    "quantity": "0.1",
     "TP1": "{{getLatestCandle.response.body.candles[0].high_price}}",
     "SL1": "{{getLatestCandle.response.body.candles[0].low_price}}"
 }

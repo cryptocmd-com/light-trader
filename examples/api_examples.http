@@ -2,6 +2,21 @@
 @baseUrl = http://127.0.0.1:5000
 
 ###
+# Long BNBUSDT
+POST {{baseUrl}}/strategy_advice/telegram/
+Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+{
+    "symbol": "BNBUSDT",
+    "entry": "200.0",
+    "quantity": "0.02",
+    "TP1": "220",
+    "SL1": 195
+}
+
+
+###
 # Long BTCUSDT
 
 POST {{baseUrl}}/strategy_advice/telegram/
