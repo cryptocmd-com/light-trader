@@ -80,3 +80,31 @@ few minutes on the Binance test exchange.
 * Follow the log messages. Within a few minutes the strategy you
   just created should see indications that the strategy opened and
   closed positions.
+
+## Monitoring
+
+We use _uptimerobot.com_ to verify that our service is up.
+Since this is a cloud service, we need to make our trading server accessible
+using a public hostname. To set that up:
+
+* Set-up a publicly accessible URL for the server. This could be done by running
+  a the cloud server, or using a tool like _ngrok_. Please note, that
+  the trading server listens on port 5000 by default.
+* Ensure you can access the _/status_ endpoint. E.g., if the hostname
+  is: _https://47bcab0f0c3f.ngrok.io/_ then the status endpoint is
+  _https://47bcab0f0c3f.ngrok.io/status_. It should return a JSON
+  object like this:
+
+```JSON
+{"overall":"ok"}
+```
+
+* Open an account on https://uptimerobot.com
+* Set-up a monitor for the status endpoint. You should see in the
+  logging messages indications of HTTP HEAD requests to the URL
+  every 5 minutes.
+* Indicate your e-mail address as the address for alerts. Ensure
+  you get an alert when you take the server down and another one
+  when you start it again.
+  If you want _uptimerobot.com_ to stop alerting, you can pause
+  the monitor. To monitor again, you can start it.

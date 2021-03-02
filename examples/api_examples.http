@@ -114,3 +114,8 @@ GET {{baseUrl}}/market/candles/ETHUSDT
 # Should fail since we're not listening to ETHUSD
 
 GET {{baseUrl}}/market/candles/ETHUSD
+
+###
+# Get system status
+
+GET {{baseUrl}}/status
