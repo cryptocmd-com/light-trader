@@ -1,13 +1,8 @@
 Tasks for development
 
-* Support the use of a test instance of Binance:
-https://testnet.binance.vision/#faq-periodic-reset
-* Integrate with the indicator for entering positions
-* Send trading position entry and exit orders
+* Provide an API request for stopping strategies.
+* Record any order execution responses we get in the cloud. A platform we can use is AWS DynamoDB.
 * Provide position and trade information through the REST endpoints.
-* Provide some security for our REST API.
 * Also subscribe for order book updates. Then instead of entering positions
 using MKT orders, send IOC which takes into account the available liquidity.
 * Setup logging into Telegram using a package like https://pypi.org/project/aiolog/
-* Specify schema explicitly for requests. Possibly use: https://pypi.org/project/flask-expects-json/
-Flask will then have to be mocked: https://stackoverflow.com/a/30380016/1268949
