@@ -81,6 +81,22 @@ few minutes on the Binance test exchange.
   just created should see indications that the strategy opened and
   closed positions.
 
+### Running in production
+
+For production use, the [Hypercorn](https://gitlab.com/pgjones/hypercorn) server is recommended.
+To invoke it on the default port, which is 8000, and accept
+connections from outside:
+
+```bash
+hypercorn -b 0.0.0.0 app:app
+```
+
+It's possible to specify a custom port, e.g. to use port 5000:
+
+```bash
+hypercorn -b 0.0.0.0:5000 app:app
+```
+
 ## Monitoring
 
 We use _uptimerobot.com_ to verify that our service is up.
