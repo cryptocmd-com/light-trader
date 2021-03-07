@@ -105,6 +105,7 @@ using a public hostname. To set that up:
 
 * Set-up a publicly accessible URL for the server. This could be done by running
   a the cloud server, or using a tool like _ngrok_. Please note, that
+  when started in development mode from VS Code,
   the trading server listens on port 5000 by default.
 * Ensure you can access the _/status_ endpoint. E.g., if the hostname
   is: _https://47bcab0f0c3f.ngrok.io/_ then the status endpoint is
