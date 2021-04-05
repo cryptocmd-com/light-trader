@@ -4,7 +4,9 @@ import collections
 import http
 
 import quart.flask_patch
-from quart import Quart, abort, request, jsonify
+from quart import (
+    Quart, abort, request, jsonify, url_for
+)
 from quart_compress import Compress
 
 import binance_trader
@@ -80,12 +82,27 @@ async def strategy_advice_telegram():
         )
         new_strategy_id = binance_trader.add_strategy(symbols, new_strategy)
         return (
-            {'strategy_id': new_strategy_id},
-            http.HTTPStatus.CREATED)
+            new_strategy.state,
+            http.HTTPStatus.CREATED,
+            {'Location': url_for(
+                'strategy_advice_telegram_get', strategy_id=new_strategy_id)}
+        )
     except (ValueError, TypeError, ArithmeticError) as e:
         logger.exception(
             "Strategy advice rejected as malformed or semantically invalid")
         abort(http.HTTPStatus.BAD_REQUEST, str(e))
+
+
+@app.route('/strategy_advice/telegram/<strategy_id>', methods=['GET'])
+@auth.login_required
+async def strategy_advice_telegram_get(strategy_id):
+    strategy = binance_trader.strategies.get(strategy_id)
+    if strategy is None:
+        abort(http.HTTPStatus.NOT_FOUND, 'No strategy with id {strategy_id}')
+    return (
+        strategy.state,
+        http.HTTPStatus.OK
+    )
 
 
 @app.route('/market/candles/<symbol>')

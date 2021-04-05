@@ -3,6 +3,7 @@ import logging
 import itertools
 import dataclasses
 import collections
+import abc
 from decimal import Decimal
 import baseconv
 
@@ -24,6 +25,13 @@ class StrategyBase(
             f'{self.client_order_id_prefix}_{n:06}'
             for n in itertools.count(1)
         )
+
+    @property
+    def state(self) -> typing.Dict[str, typing.Any]:
+        return {
+            'strategy_id': self.client_order_id_prefix,
+            'position': str(self.position)
+        }
 
     @property
     def client_order_id_prefix(self) -> str:

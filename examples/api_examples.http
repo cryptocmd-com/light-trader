@@ -3,6 +3,8 @@
 
 ###
 # Long BNBUSDT
+
+# @name bnbUsdtStrategyId
 POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
@@ -17,8 +19,15 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 
 ###
+
+# Retrieve the object created by the request above
+GET {{baseUrl}}/strategy_advice/telegram/{{bnbUsdtStrategyId.response.body.strategy_id}}
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+###
 # Long BTCUSDT
 
+# @name btcUsdtStrategyId
 POST {{baseUrl}}/strategy_advice/telegram/
 Content-Type: application/json
 Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
