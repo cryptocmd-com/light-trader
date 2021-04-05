@@ -1,5 +1,6 @@
 
 @baseUrl = http://127.0.0.1:5000
+@wrong_id = 200TT001
 
 ###
 # Long BNBUSDT
@@ -22,6 +23,18 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 # Retrieve the object created by the request above
 GET {{baseUrl}}/strategy_advice/telegram/{{bnbUsdtStrategyId.response.body.strategy_id}}
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+###
+
+# Try to retrieve the object created by the request using wrong strategy id
+GET {{baseUrl}}/strategy_advice/telegram/{{wrong_id}}
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+###
+
+# Retrieve the object created by the request using Location header value
+GET {{baseUrl}}{{bnbUsdtStrategyId.response.headers.location}}
 Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 ###

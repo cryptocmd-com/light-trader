@@ -98,7 +98,7 @@ async def strategy_advice_telegram():
 async def strategy_advice_telegram_get(strategy_id):
     strategy = binance_trader.strategies.get(strategy_id)
     if strategy is None:
-        abort(http.HTTPStatus.NOT_FOUND, 'No strategy with id {strategy_id}')
+        abort(http.HTTPStatus.NOT_FOUND, f'No strategy with id {strategy_id}')
     return (
         strategy.state,
         http.HTTPStatus.OK
