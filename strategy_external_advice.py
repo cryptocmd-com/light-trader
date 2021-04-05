@@ -1,4 +1,5 @@
 import logging
+import typing
 from decimal import Decimal
 
 import binance
@@ -41,6 +42,20 @@ class StrategyExternalAdvice(strategy_price_swing.StrategyPriceSwing):
         )
 
         super().__init__(client, plan)
+    
+    @property
+    def state(self) -> typing.Dict[str, typing.Any]:
+        state_dict = super().state
+        state_dict.update(
+        {
+            "SL1" : str(self.stop_loss_price),
+            "TP1" : str(self.take_profit_price),
+            "symbol" : str(self.plan.symbol),
+            "entry" :  str(self.plan.entry_price),
+            "quantity" : str(self.plan.entry_quantity)
+        })
+        return state_dict
+
 
 
 '''
