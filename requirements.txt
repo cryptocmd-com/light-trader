@@ -1,7 +1,7 @@
 Quart==0.14.1
 quart-compress==0.2.1
 Flask-HTTPAuth==4.2.0
-binance.py==1.7.0
+binance.py==1.7.1
 # For Binance
 aiohttp==3.7.3
 toml==0.10.2
