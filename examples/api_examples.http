@@ -18,6 +18,34 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
     "SL1": 195
 }
 
+###
+
+# Changes stategy status to stop
+PUT  {{baseUrl}}{{bnbUsdtStrategyId.response.headers.location}}/status
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+Content-Type: application/json
+
+{
+    "status": "STOPPED"
+}
+
+###
+
+# Sending a bad stategy status
+PUT  {{baseUrl}}{{bnbUsdtStrategyId.response.headers.location}}/status
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+Content-Type: application/json
+
+{
+    "status": "WRONG"
+}
+
+###
+
+#  Retrieves strategy status
+GET  {{baseUrl}}{{bnbUsdtStrategyId.response.headers.location}}/status
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
 
 ###
 

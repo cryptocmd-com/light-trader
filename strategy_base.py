@@ -1,11 +1,14 @@
+import abc
 import typing
 import logging
+import baseconv
+import datetime
 import itertools
 import dataclasses
 import collections
-import abc
 from decimal import Decimal
-import baseconv
+from enum import Enum, auto
+
 
 from trade_plan import TradePlanAtUnspecifiedPrice
 # from trade_plan_executor import TradePlanExecutor, TradeEventHandler
@@ -17,8 +20,16 @@ logger = logging.getLogger(__name__)
 class StrategyBase(
     MarketFeedEventHandler
 ):
+    class Status(Enum):
+        STOPPED = auto()
+        ACTIVED = auto()
+        PAUSED = auto()
+        FAILED = auto()
+
     def __init__(self):
         self.position = Decimal(0)
+        self.create_time = datetime.datetime.now().replace(microsecond=0).isoformat()
+        self.status = self.Status.PAUSED
         # TODO: Determine maximum position
 
         self._order_id_sequence = (
@@ -26,11 +37,19 @@ class StrategyBase(
             for n in itertools.count(1)
         )
 
+    def set_status(self, new_status) -> None:
+        try:
+            self.status = self.Status[new_status]
+        except KeyError as ex:
+            raise ValueError(f'Invalid status {new_status}') from ex
+
     @property
     def state(self) -> typing.Dict[str, typing.Any]:
         return {
             'strategy_id': self.client_order_id_prefix,
-            'position': str(self.position)
+            'position': str(self.position),
+            'create_time': self.create_time,
+            'status': self.status.name
         }
 
     @property

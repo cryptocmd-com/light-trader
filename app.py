@@ -105,6 +105,36 @@ async def strategy_advice_telegram_get(strategy_id):
     )
 
 
+@app.route('/strategy_advice/telegram/<strategy_id>/status', methods=['PUT', 'GET']) 
+@auth.login_required
+async def strategy_advice_telegram_status(strategy_id):
+    strategy = binance_trader.strategies.get(strategy_id)
+    if strategy is None:
+        abort(http.HTTPStatus.NOT_FOUND, f'No strategy with id {strategy_id}')
+
+    new_status = None
+    if request.method == 'PUT':
+        try:
+            req = await request.get_json()
+            new_status = req['status']
+            strategy.set_status(new_status)
+        except (ValueError, AttributeError):
+            abort(http.HTTPStatus.BAD_REQUEST, f'Unknown status: {new_status}')
+        except KeyError:
+            abort(http.HTTPStatus.BAD_REQUEST, f'Request did not specify a status')
+
+
+    return (
+        {
+            "status": strategy.state['status']
+        },
+        http.HTTPStatus.OK
+    )
+
+
+    
+
+
 @app.route('/market/candles/<symbol>')
 async def symbol_candles(symbol: str):
     symbol_uc = symbol.upper()
