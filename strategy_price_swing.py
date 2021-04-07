@@ -53,7 +53,8 @@ class StrategyPriceSwing(
     async def on_candle(self, candle: dict) -> None:
         current_price = decimal.Decimal(candle['close_price'])
         if (self.position == 0 and
-                current_price <= self.plan.entry_price):
+                current_price <= self.plan.entry_price and
+                self.status == Status.ACTIVE):
             await self._open_position()
             logger.debug(
                 'Strategy %s opened position at price %s: BUY %s %s',
