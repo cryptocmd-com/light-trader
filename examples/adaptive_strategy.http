@@ -24,7 +24,7 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 ###
 
-# Changes stategy status to stop
+# Changes stategy status to STOPPED
 PUT  {{baseUrl}}{{adaptiveStrategyId.response.headers.location}}/status
 Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 Content-Type: application/json
@@ -32,6 +32,29 @@ Content-Type: application/json
 {
     "status": "STOPPED"
 }
+
+###
+
+# Changes stategy status to PAUSED
+PUT  {{baseUrl}}{{adaptiveStrategyId.response.headers.location}}/status
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+Content-Type: application/json
+
+{
+    "status": "PAUSED"
+}
+
+###
+
+# Changes stategy status to ACTIVE
+PUT  {{baseUrl}}{{adaptiveStrategyId.response.headers.location}}/status
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+Content-Type: application/json
+
+{
+    "status": "ACTIVE"
+}
+
 
 ###
 

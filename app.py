@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import collections
+import datetime
 import http
 
 import quart.flask_patch
@@ -30,10 +31,21 @@ def get_logging_level() -> int:
 
 
 logger = logging.getLogger(__name__)
+log_file_name = 'log/' + str(int(datetime.datetime.now().timestamp())) + '.log'
+log_level = get_logging_level()
+f = open(log_file_name, "x")
 logging.basicConfig(
-    level=get_logging_level(),
-    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s'
-)
+    level= log_level,
+    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
+    datefmt='%d-%m %H:%M',
+    filename= log_file_name,
+    filemode='w')
+
+console = logging.StreamHandler()
+console.setLevel(log_level)
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
 
 app = Quart(__name__)
 Compress(app)

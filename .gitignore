@@ -11,3 +11,4 @@ __pycache__/
 # Experimental code used to exercise the trader's API
 post_rest_req.py
 rest_api.ipynb
+log/*.log
