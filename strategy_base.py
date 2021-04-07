@@ -22,7 +22,7 @@ class StrategyBase(
 ):
     class Status(Enum):
         STOPPED = auto()
-        ACTIVE = auto()
+        ACTIVE = auto() 
         PAUSED = auto()
         FAILED = auto()
 

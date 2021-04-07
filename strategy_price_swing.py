@@ -54,7 +54,7 @@ class StrategyPriceSwing(
         current_price = decimal.Decimal(candle['close_price'])
         if (self.position == 0 and
                 current_price <= self.plan.entry_price and
-                self.status == Status.ACTIVE):
+                self.status == self.Status.ACTIVE):
             await self._open_position()
             logger.debug(
                 'Strategy %s opened position at price %s: BUY %s %s',
@@ -63,9 +63,7 @@ class StrategyPriceSwing(
                 self.plan.entry_quantity,
                 self.symbol_traded
             )
-        elif self.position != 0 and not (
-            self.stop_loss_price < current_price < self.take_profit_price
-        ):
+        elif self.position != 0 and not (self.stop_loss_price < current_price < self.take_profit_price)  or self.status == self.Status.STOPPED:
             await self._close_position()
             logger.debug(
                 'Strategy %s closing position of %s %s at price %s',

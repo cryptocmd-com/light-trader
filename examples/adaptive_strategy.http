@@ -21,3 +21,26 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
     "TP1": "{{getLatestCandle.response.body.candles[0].high_price}}",
     "SL1": "{{getLatestCandle.response.body.candles[0].low_price}}"
 }
+
+###
+
+# Changes stategy status to stop
+PUT  {{baseUrl}}{{adaptiveStrategyId.response.headers.location}}/status
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+Content-Type: application/json
+
+{
+    "status": "STOPPED"
+}
+
+###
+
+#  Retrieves strategy status
+GET  {{baseUrl}}{{adaptiveStrategyId.response.headers.location}}/status
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+###
+
+# Retrieve the object created by the request above
+GET {{baseUrl}}/strategy_advice/telegram/{{adaptiveStrategyId.response.body.strategy_id}}
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
