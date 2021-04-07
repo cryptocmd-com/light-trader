@@ -154,6 +154,13 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 ###
 
+# List Strategies
+
+GET {{baseUrl}}/strategy_advice/telegram/
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+###
+
 GET {{baseUrl}}/market/candles/BTCUSDT
 
 ###

@@ -77,7 +77,7 @@ async def status():
 
 @app.route('/strategy_advice/telegram/', methods=['POST'])
 @auth.login_required
-async def strategy_advice_telegram():
+async def strategy_advice_telegram_add():
     request_json = await request.get_json(force=True)
     symbols = request_json.get('symbols', [])
     if 'symbol' in request_json and request_json['symbol'] not in symbols:
@@ -103,6 +103,26 @@ async def strategy_advice_telegram():
         logger.exception(
             "Strategy advice rejected as malformed or semantically invalid")
         abort(http.HTTPStatus.BAD_REQUEST, str(e))
+
+
+def _add_strategy_url(strategy_info: dict) -> dict:
+    strategy_id = strategy_info.get('strategy_id')
+    if strategy_id is not None:
+        strategy_info['url'] = url_for(
+                'strategy_advice_telegram_get', strategy_id=strategy_id)
+    return strategy_info
+
+
+@app.route('/strategy_advice/telegram/', methods=['GET'])
+@auth.login_required
+def strategy_advice_telegram_list():
+    listing = binance_trader.get_strategy_summaries(
+            (strategy_external_advice.StrategyExternalAdvice,))
+
+    return (
+        {'strategies': list(map(_add_strategy_url, listing))},
+        http.HTTPStatus.OK
+    )
 
 
 @app.route('/strategy_advice/telegram/<strategy_id>', methods=['GET'])

@@ -50,6 +50,12 @@ class StrategyPriceSwing(
     def symbols_monitored(self) -> typing.Set[str]:
         return {self.symbol_traded}
 
+    @property
+    def summary(self) -> typing.Dict[str, typing.Any]:
+        result = super().state
+        result['symbol_traded'] = self.symbol_traded
+        return result
+
     async def on_candle(self, candle: dict) -> None:
         current_price = decimal.Decimal(candle['close_price'])
         if (self.position == 0 and

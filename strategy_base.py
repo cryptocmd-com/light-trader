@@ -53,6 +53,10 @@ class StrategyBase(
         }
 
     @property
+    def summary(self) -> typing.Dict[str, typing.Any]:
+        return self.state
+
+    @property
     def client_order_id_prefix(self) -> str:
         # TODO: Use a unique ID
         return baseconv.base58.encode(id(self))

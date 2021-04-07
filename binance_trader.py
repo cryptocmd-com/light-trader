@@ -59,6 +59,16 @@ def add_strategy(
     return strategy.client_order_id_prefix
 
 
+def get_strategy_summaries(restrict_classes=()) -> typing.Generator[
+    typing.Dict[str, typing.Any],
+    None,
+    None
+]:
+    for strategy in strategies.values():
+        if not restrict_classes or isinstance(strategy, restrict_classes):
+            yield strategy.summary
+
+
 def read_config():
     config_path = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), 'config.toml')
