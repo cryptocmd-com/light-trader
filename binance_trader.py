@@ -18,7 +18,7 @@ market = None
 client = None
 connection_params = {}
 user_passwords: typing.Dict[str, str] = {}
-strategies: typing.Dict[uuid.UUID, strategy_base.StrategyBase] = {}
+strategies: typing.Dict[str, strategy_base.StrategyBase] = {}
 
 
 async def get_client() -> binance.Client:
