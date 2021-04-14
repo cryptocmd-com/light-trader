@@ -69,7 +69,9 @@ class StrategyPriceSwing(
                 self.plan.entry_quantity,
                 self.symbol_traded
             )
-        elif self.position != 0 and not (self.stop_loss_price < current_price < self.take_profit_price)  or self.status == self.Status.STOPPED:
+        elif self.position != 0 and (
+            not (self.stop_loss_price < current_price < self.take_profit_price) or self.status == self.Status.STOPPED
+        ):
             await self._close_position()
             logger.debug(
                 'Strategy %s closing position of %s %s at price %s',
