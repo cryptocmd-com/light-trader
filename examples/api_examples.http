@@ -12,10 +12,27 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 {
     "symbol": "BNBUSDT",
-    "entry": "200.0",
-    "quantity": "0.02",
-    "TP1": "220",
-    "SL1": 195
+    "entry": "566",
+    "quantity": "0.03",
+    "TP1": "566.1",
+    "SL1": "565"
+}
+
+
+###
+# Filled strategy with position
+
+POST {{baseUrl}}/strategy_advice/telegram/
+Content-Type: application/json
+Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
+
+{
+    "symbol": "BNBUSDT",
+    "entry": "569.4",
+    "quantity": "0.03",
+    "TP1": "572.7",
+    "SL1": "560",
+    "position": "0.03"
 }
 
 ###

@@ -27,6 +27,7 @@ class StrategyExternalAdvice(strategy_price_swing.StrategyPriceSwing):
             take_profit_price = Decimal(advice['TP1'])
             entry_price = Decimal(advice['entry'])
             entry_quantity = Decimal(advice['quantity'])
+            position = Decimal(advice.get('position', 0))
             
         except KeyError as ex:
             raise ValueError(f'Missing mandatory field: {ex.args[0]}') from ex
@@ -43,6 +44,7 @@ class StrategyExternalAdvice(strategy_price_swing.StrategyPriceSwing):
         )
 
         super().__init__(client, plan)
+        self.position = position
         self.set_status('ACTIVE')
     
     @property

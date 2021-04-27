@@ -25,10 +25,11 @@ class StrategyBase(
         ACTIVE = auto() 
         PAUSED = auto()
         FAILED = auto()
-        # TODO: add status: COMPLETE
+        COMPLETE = auto()
 
     def __init__(self):
         self.position = Decimal(0)
+        self.actual_averege_entry_price = None
         self.create_time = datetime.datetime.now().replace(microsecond=0).isoformat()
         self.status = self.Status.PAUSED
         # TODO: Determine maximum position
@@ -59,7 +60,6 @@ class StrategyBase(
 
     @property
     def client_order_id_prefix(self) -> str:
-        # TODO: Use a unique ID
         return baseconv.base58.encode(id(self))
 
     def generate_order_id(self) -> str:
@@ -85,7 +85,7 @@ class StrategyBase(
                 cum_partial_prices += (float(qty) * float(fill['price']))
                 commissions.update({
                     fill['commissionAsset']: Decimal(fill['commission'])
-                })
+                })          
 
             return cls(
                 cum_qty, cum_partial_prices / float(cum_qty), dict(commissions)
