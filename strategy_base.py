@@ -25,6 +25,7 @@ class StrategyBase(
         ACTIVE = auto() 
         PAUSED = auto()
         FAILED = auto()
+        # TODO: add status: COMPLETE
 
     def __init__(self):
         self.position = Decimal(0)
