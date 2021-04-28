@@ -3,6 +3,8 @@ import logging
 import collections
 import datetime
 import http
+import os
+
 
 import quart.flask_patch
 from quart import (
@@ -13,7 +15,7 @@ from quart_compress import Compress
 import binance_trader
 import strategy_external_advice
 from auth import auth
-
+from strategy_loger import strategy_loger
 
 def get_logging_level() -> int:
     default_log_level = 'INFO'
@@ -46,6 +48,14 @@ console.setLevel(log_level)
 formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
+
+# TODO: Code review
+startup_timestamp = datetime.datetime.timestamp(datetime.datetime.now())
+dirName = 'history/' + str(startup_timestamp)
+os.mkdir(dirName)
+# TODO: check the strategy_loger.py class
+strategy_loger = strategy_loger(dirName, logger)
+
 
 app = Quart(__name__)
 Compress(app)
@@ -93,6 +103,7 @@ async def strategy_advice_telegram_add():
             request_json
         )
         new_strategy_id = binance_trader.add_strategy(symbols, new_strategy)
+        strategy_loger.create_strategy_log(new_strategy, new_strategy_id)
         return (
             new_strategy.state,
             http.HTTPStatus.CREATED,
