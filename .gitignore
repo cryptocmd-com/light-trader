@@ -7,6 +7,7 @@ config*.toml
 .vscode/
 .idea
 __pycache__/
+history/*
 
 # Experimental code used to exercise the trader's API
 post_rest_req.py

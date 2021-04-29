@@ -161,6 +161,7 @@ async def strategy_advice_telegram_status(strategy_id):
             req = await request.get_json()
             new_status = req['status']
             strategy.set_status(new_status)
+            strategy_loger.update_strategy_status(strategy_id, new_status)
         except (ValueError, AttributeError):
             abort(http.HTTPStatus.BAD_REQUEST, f'Unknown status: {new_status}')
         except KeyError:
