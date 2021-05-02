@@ -15,7 +15,7 @@ from quart_compress import Compress
 import binance_trader
 import strategy_external_advice
 from auth import auth
-from strategy_loger import strategy_loger
+from strategy_journal import strategyJournal, make_journal_dir, strategy_journal
 
 def get_logging_level() -> int:
     default_log_level = 'INFO'
@@ -49,12 +49,6 @@ formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
-# TODO: Code review
-startup_timestamp = datetime.datetime.timestamp(datetime.datetime.now())
-dirName = 'history/' + str(startup_timestamp)
-os.mkdir(dirName)
-# TODO: check the strategy_loger.py class
-strategy_loger = strategy_loger(dirName, logger)
 
 
 app = Quart(__name__)
@@ -103,7 +97,7 @@ async def strategy_advice_telegram_add():
             request_json
         )
         new_strategy_id = binance_trader.add_strategy(symbols, new_strategy)
-        strategy_loger.create_strategy_log(new_strategy, new_strategy_id)
+        strategy_journal.create_strategy_journal(new_strategy, new_strategy_id)
         return (
             new_strategy.state,
             http.HTTPStatus.CREATED,
@@ -161,7 +155,7 @@ async def strategy_advice_telegram_status(strategy_id):
             req = await request.get_json()
             new_status = req['status']
             strategy.set_status(new_status)
-            strategy_loger.update_strategy_status(strategy_id, new_status)
+            strategy_journal.update_strategy_status(strategy_id, new_status)
         except (ValueError, AttributeError):
             abort(http.HTTPStatus.BAD_REQUEST, f'Unknown status: {new_status}')
         except KeyError:
