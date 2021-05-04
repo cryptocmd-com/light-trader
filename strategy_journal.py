@@ -9,10 +9,13 @@ from quart import (Quart, abort, request, jsonify, url_for)
 logger = logging.getLogger(__name__)
 
 
+def datetime_to_name(t: datetime.datetime):
+   return t.isoformat().split('+')[0].replace(':', '')
 
 def make_journal_dir():
-    startup_timestamp = datetime.datetime.timestamp(datetime.datetime.now())
-    dirName = 'history/' + str(startup_timestamp)
+    startup_timestamp = datetime.datetime.now().isoformat()
+    startup_timestamp = startup_timestamp.split('.')[0].replace(':', '')
+    dirName = os.path.join('journal', str(startup_timestamp))
     os.mkdir(dirName)
     return dirName
 
@@ -21,22 +24,21 @@ def make_journal_dir():
 class strategyJournal():
 
     def __init__(self, path):
-        self._file_Path = path + '/'
+        self._file_Path = path
 
     def create_strategy_journal(self, new_strategy, new_strategy_id):
         try:
-            filename = self._file_Path + str(new_strategy_id) + '.json'
-            now = datetime.datetime.now()
+            path = os.path.join(self._file_Path , str(new_strategy_id), "")
+            os.mkdir(path)
+            now =  datetime.datetime.now()
+            filename = '{}.json'.format(datetime_to_name(now))
             data = {
-                datetime.datetime.timestamp(now) : {
                     "event" : "CREATED",
-                    "date" : str(now),
-                    "state" : new_strategy.state
-                }
-                
+                    "timestamp" : now.isoformat(),
+                    "state" : new_strategy.state   
             }
 
-            with open(filename, 'wt') as fp:
+            with open(path + filename, 'wt') as fp:
                 json.dump(data, fp)
         except (ValueError, TypeError, ArithmeticError) as e:
                 logger.exception("Strategy StrategyJournal failled to save Json file.")
@@ -44,29 +46,25 @@ class strategyJournal():
 
     def update_strategy_status(self, strategy_id, new_status):
         try:
+            path = os.path.join(self._file_Path , str(strategy_id), "")
             now = datetime.datetime.now()
-            filename = self._file_Path + str(strategy_id) + '.json'
-            with open(filename, 'rt') as json_file:
-                strategy = json.load(json_file)
+            filename = '{}.json'.format(datetime_to_name(now))
             
-            last_update = list(strategy.keys())[-1]
-            last_state = deepcopy(strategy[last_update]['state'])
-            last_state['status'] = new_status
+            state = {}
+            state['status'] = new_status
 
-            strategy[str(datetime.datetime.timestamp(now))] = {
+            strategy = {
                 "event" : "STATUS_CHANGE",
-                "date" : str(now),
-                "state" : last_state
+                "timestamp" : now.isoformat(),
+                "state" : state
             }
 
-            with open(filename, 'wt') as fp:
+            with open(path + filename, 'wt') as fp:
                 json.dump(strategy, fp)
 
         except (ValueError, TypeError, ArithmeticError) as e:
                 logger.exception("StrategyJournal Could not update status in Json file.")
                 abort(http.HTTPStatus.BAD_REQUEST, str(e))
-
-
 
 
 dirName = make_journal_dir()

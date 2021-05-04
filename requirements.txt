@@ -6,3 +6,4 @@ binance.py==1.7.1
 aiohttp==3.7.3
 toml==0.10.2
 python-baseconv==1.2.2
+iso8601==0.1.14
