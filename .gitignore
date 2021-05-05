@@ -13,3 +13,4 @@ history/*
 post_rest_req.py
 rest_api.ipynb
 log/*.log
+journal/*

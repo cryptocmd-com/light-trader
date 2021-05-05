@@ -8,6 +8,7 @@ import dataclasses
 import collections
 from decimal import Decimal
 from enum import Enum, auto
+from strategy_journal import strategy_journal
 
 
 from trade_plan import TradePlanAtUnspecifiedPrice
@@ -125,6 +126,7 @@ class StrategyBase(
                 fill_summary.average_price,
                 transact_time
             )
+            strategy_journal.update_strategy_position(strategy_id=self.client_order_id_prefix, state=self.state , new_position=exec_qty, side=side)
         else:
             logger.info(
                 'Order %s %s %s/%s partly filled. Got price %f at t=%d. status: %s',
@@ -136,6 +138,7 @@ class StrategyBase(
                 transact_time,
                 status
             )
+            strategy_journal.update_strategy_position(strategy_id=self.client_order_id_prefix, state=self.state , new_position=exec_qty, side=side)
 
         # TODO: Calculate average fill price and commission.
         position_increment_sign = {

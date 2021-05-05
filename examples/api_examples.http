@@ -12,10 +12,10 @@ Authorization: Basic telegram {{$dotenv TELEGRAM_USER_PASSWORD}}
 
 {
     "symbol": "BNBUSDT",
-    "entry": "613.5",
+    "entry": "652",
     "quantity": "0.03",
-    "TP1": "613.6",
-    "SL1": "613"
+    "TP1": "652.1",
+    "SL1": "643"
 }
 
 
