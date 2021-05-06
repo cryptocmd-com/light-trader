@@ -3,7 +3,9 @@ import json
 import os.path
 import argparse
 import iso8601
-
+import toml
+import requests
+from decimal import Decimal
 
 def parse_args():
     args = argparse.ArgumentParser()
@@ -92,15 +94,43 @@ def _get_latest_strategy_states(
     ]
 
 
+def read_config():
+    config_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    config_path = os.path.join(config_dir, 'config.toml')
+    return toml.load(config_path)
+
+
+def send_req_to_light_trader(req):
+    config = read_config()
+    return requests.post('http://localhost:5000/strategy_advice/telegram/', json = req, auth=('telegram', 'qawsed'))
+
+
 def main():
     args = parse_args()
-
     for state in _get_latest_strategy_states(
         args.journal, args.time
     ):
         # TODO: This should be the behavior only when both
         # the dry-run and write all strategy states flags are set.
-        print('POST', json.dumps(state, indent=2))
+        if not args.dry:
+            print('POST', json.dumps(state, indent=2))
+            req = state['state']
+            del req['strategy_id']
+            print('Request dict:', req)
+
+        else:
+            req = state['state']
+            if (req['status'] == 'ACTIVE' or 
+                req['status'] == 'PAUSED' or
+                (req['status'] == 'STOPPED' and Decimal(req['position']) != 0)
+                ):
+                del req['strategy_id']
+                print(req)
+                r = send_req_to_light_trader(req=req)
+                print('Code: {}.\nText: {}.\n'.format(r.status_code,r.text))
+
+            
+            
 
 
 # Note: this is a very early version of the script, which can only run in "dry-run"
