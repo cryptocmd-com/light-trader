@@ -3,6 +3,17 @@ import requests
 import pandas as pd
 from decimal import Decimal
 
+def get_all_coin_list():
+    url = 'https://api.binance.com/api/v3/exchangeInfo'
+    responde = requests.get(url=url)
+    responde = responde.json()
+    symbol_list = []
+    for symbol in responde['symbols']:
+        symbol_list.append(symbol['symbol'])
+
+    return symbol_list
+
+
 def get_candle_history(symbol):
     url = 'https://api.binance.com/api/v3/klines?symbol={}&interval=1m&limit=1000'.format(symbol)
 
@@ -45,11 +56,13 @@ def get_general_positions_info(key):
     path = '/strategy_advice/telegram/'
     responde = send_get_req(key=key, path=path)
     responde = responde.json()
-    strategies = responde['strategies']
-    strategies_df = pd.DataFrame(data=strategies)
-    strategies_df['position'] = strategies_df['position'].astype(float)
-    return strategies_df.drop('url', axis=1)
-
+    if responde['strategies'] != []:
+        strategies = responde['strategies']
+        strategies_df = pd.DataFrame(data=strategies)
+        strategies_df['position'] = strategies_df['position'].astype(float)
+        return strategies_df.drop('url', axis=1)
+    else:
+        return 0
 
 def get_server_status(key):
     path = '/status'
