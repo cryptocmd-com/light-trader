@@ -62,7 +62,7 @@ def get_general_positions_info(key):
         strategies_df['position'] = strategies_df['position'].astype(float)
         return strategies_df.drop('url', axis=1)
     else:
-        return 0
+        return pd.DataFrame()
 
 def get_server_status(key):
     path = '/status'

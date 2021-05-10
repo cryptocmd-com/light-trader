@@ -19,7 +19,31 @@ def main(key):
     candle_chart_flag = st.sidebar.checkbox(label='Candle Chart', value=True)
     st.sidebar.image(image='images/ccmd.logo.png', width=250)
 
-    if strategies != 0:
+    if strategies.empty:
+        ## Main ##
+        st.title(body="Light Trader Dashboard")        
+
+        if positions_flag:
+            st.subheader('Strategies list:')
+            st.text(body='Light Trader has no active strategies right now.')
+
+        if strategie_flag:
+            st.subheader('Strategy details:')
+            st.text(body='Light Trader has no active strategies right now.')
+
+        if candle_chart_flag:
+            coin_list = get_all_coin_list()
+            coin_symbol = st.selectbox(label='Select symbol for information:', options=coin_list)
+
+            df = get_candle_history(coin_symbol)
+
+            fig = go.Figure()
+            fig.add_trace(go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close']))
+            st.plotly_chart(fig)
+
+            st.dataframe(df)      
+
+    else:
         ## Main ##
         st.title(body="Light Trader Dashboard")        
 
@@ -44,34 +68,14 @@ def main(key):
 
             st.dataframe(df)
 
-    elif strategies == 0:
-        ## Main ##
-        st.title(body="Light Trader Dashboard")        
-
-        if positions_flag:
-            st.subheader('Strategies list:')
-            st.text(body='Light Trader has no active strategies right now.')
-
-        if strategie_flag:
-            st.subheader('Strategy details:')
-            st.text(body='Light Trader has no active strategies right now.')
-
-        if candle_chart_flag:
-            coin_list = get_all_coin_list()
-            coin_symbol = st.selectbox(label='Select symbol for information:', options=coin_list)
-
-            df = get_candle_history(coin_symbol)
-
-            fig = go.Figure()
-            fig.add_trace(go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close']))
-            st.plotly_chart(fig)
-
-            st.dataframe(df)
-
 
 
 
 if __name__ == '__main__':
     config  = read_config()
     user_password = list((config.get('user_passwords', {})).items())[0]
+
     main(user_password)
+
+
+
