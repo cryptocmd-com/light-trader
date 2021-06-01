@@ -76,7 +76,7 @@ class StrategyPriceSwing(
             await self._close_position()
             if (self.position == 0 and self.status != self.Status.STOPPED):
                 self.status = self.Status.COMPLETE
-                strategy_journal.update_strategy_status(strategy_id=self.state, state=self.state, new_status='COMPLETE')
+                strategy_journal.update_strategy_status(strategy_id=self.state['strategy_id'], state=self.state, new_status='COMPLETE')
             logger.debug(
                 'Strategy %s closing position of %s %s at price %s',
                 self.client_order_id_prefix,
