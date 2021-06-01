@@ -13,22 +13,22 @@ def parse_args():
         '--journal', '-j',
         required=True,
         metavar='journal_dir',
-        help='Journal directory'
+        help='Journal directory, point the folder name. Example: .../python play_journal -j journal'
     )
     args.add_argument(
         '--dry', '-d',
         action='store_true',
-        help='Dry-run'
+        help='Dry-run, prints all the strategies without sending them. '
     )
     args.add_argument(
         '--time', '-t',
         metavar='launch_time',
-        help='Journal starting at a particular time'
+        help='Journal starting at a particular time. Example: .../python play_journal -j journal -t 2021-05-05T124017'
     )
     args.add_argument(
         '--all', '-a',
         action='store_true',
-        help='Write all strategy states'
+        help='Write all strategy states. Useless right now.'
     )
 
     return args.parse_args()
@@ -112,11 +112,10 @@ def main():
     ):
         # TODO: This should be the behavior only when both
         # the dry-run and write all strategy states flags are set.
-        if not args.dry:
+        if args.dry:
             print('POST', json.dumps(state, indent=2))
             req = state['state']
             del req['strategy_id']
-            print('Request dict:', req)
 
         else:
             req = state['state']

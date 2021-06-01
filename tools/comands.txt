@@ -1,0 +1,3 @@
+python tools/play_journal.py -j journal -t 2021-05-06T112623
+
+add -d for dry run (only print, no sending)
