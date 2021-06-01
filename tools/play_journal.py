@@ -6,6 +6,7 @@ import iso8601
 import toml
 import requests
 from decimal import Decimal
+from requests.auth import HTTPBasicAuth
 
 def parse_args():
     args = argparse.ArgumentParser()
@@ -102,7 +103,8 @@ def read_config():
 
 def send_req_to_light_trader(req):
     config = read_config()
-    return requests.post('http://localhost:5000/strategy_advice/telegram/', json = req, auth=('telegram', 'qawsed'))
+    auth = HTTPBasicAuth('telegram', config['user_passwords']['telegram'])
+    return requests.post('http://localhost:5000/strategy_advice/telegram/', json = req, auth=auth)
 
 
 def main():

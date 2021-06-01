@@ -10,7 +10,7 @@
       "request": "launch",
       "program": "${file}",
       "args": [
-          "-j", "journal", "-d", "-t", "2021-05-05T124017"
+          "-j", "journal", "-t", "2021-05-05T124017"
       ],
       "console": "integratedTerminal"
     },
